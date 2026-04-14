@@ -938,6 +938,20 @@
         let currentViewLoja = null;
         let globalMap = null;  // referência para o mapa global
 
+        // Definição do ícone personalizado com a logo da Kalunga
+        const kalungaIcons = L.Icon.extend({
+            options: {
+                shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+                iconSize: [25, 41],
+                shadowSize: [41, 41],
+                iconAnchor: [12, 41],
+                shadowAnchor: [12, 41],
+                popupAnchor: [0, -34]
+            }
+        });
+
+        const customIcon = new kalungaIcons({ iconUrl: 'https://static.kalunga.com.br/favicon-32x32.png' });
+
         function getEnderecoSimples(loja) { return (loja.Endereço || "").split(" - ")[0].trim() || "—"; }
         function formatarHorario(h) { if (!h) return ""; return h.replace(/Segunda à Sábado/g, "Seg–Sáb").replace(/Domingos/g, "Dom").replace(/das /g, "").replace(/às /g, "–"); }
         function getHorariosFormatados(loja) { return [loja.Horario01, loja.Horario02, loja.Horario03].map(formatarHorario).filter(Boolean).join(" / ") || "Não informado"; }
@@ -1075,7 +1089,7 @@
                 const map = L.map(mapDiv).setView([mLat, mLng], zoom);
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>' }).addTo(map);
                 const marker = hasCoord ? [lat, lng] : [mLat, mLng];
-                L.marker(marker).addTo(map).bindPopup(hasCoord ? loja.NomeSistema : "Localização aproximada").openPopup();
+                L.marker(marker, { icon: customIcon }).addTo(map).bindPopup(hasCoord ? loja.NomeSistema : "Localização aproximada").openPopup();
                 map.invalidateSize();
             }, 200);
         };
@@ -1151,7 +1165,7 @@
             $('#editModal').modal('hide');
         });
 
-        // ================= MAPA GLOBAL =================
+        // ================= MAPA GLOBAL COM ZOOM OUT =================
         function abrirMapaGlobal() {
             const lojasComCoordenadas = lojasData.filter(loja => {
                 const lat = parseFloat(loja.Latitude);
@@ -1175,7 +1189,7 @@
                     globalMap = null;
                 }
 
-                // Calcular centro médio
+                // Calcula o centro médio para posicionar o mapa
                 let latSum = 0, lngSum = 0;
                 lojasComCoordenadas.forEach(loja => {
                     latSum += parseFloat(loja.Latitude);
@@ -1196,25 +1210,24 @@
                     const lat = parseFloat(loja.Latitude);
                     const lng = parseFloat(loja.Longitude);
                     const popupContent = `
-                        <div style="font-family:'DM Sans'; min-width: 180px;">
-                            <strong style="font-size:1rem;">${loja.NomeSistema || loja.CD_Filial}</strong><br>
-                            <span style="font-size:0.8rem;">${loja.Municipio || ''} / ${loja.UF || ''}</span><br>
-                            <span style="font-size:0.75rem; color:#555;">${loja.Endereço || ''}</span><br>
-                            <span class="badge-status ${loja.status === 'Ativo' ? 'badge-ativo' : 'badge-inativo'}" style="margin-top:5px;">${loja.status}</span><br>
-                            <button class="btn-action" style="margin-top:8px;" onclick="visualizarLoja('${loja.CD_Filial}'); $('#mapaModal').modal('hide');">Ver detalhes</button>
-                        </div>
-                    `;
-                    const marker = L.marker([lat, lng]).addTo(markerGroup);
+                    <div style="font-family:'DM Sans'; min-width: 180px;">
+                        <strong style="font-size:1rem;">${loja.NomeSistema || loja.CD_Filial}</strong><br>
+                        <span style="font-size:0.8rem;">${loja.Municipio || ''} / ${loja.UF || ''}</span><br>
+                        <span style="font-size:0.75rem; color:#555;">${loja.Endereço || ''}</span><br>
+                        <span class="badge-status ${loja.status === 'Ativo' ? 'badge-ativo' : 'badge-inativo'}" style="margin-top:5px;">${loja.status}</span><br>
+                        <button class="btn-action" style="margin-top:8px;" onclick="visualizarLoja('${loja.CD_Filial}'); $('#mapaModal').modal('hide');">Ver detalhes</button>
+                    </div>
+                `;
+                    const marker = L.marker([lat, lng], { icon: customIcon }).addTo(markerGroup);
                     marker.bindPopup(popupContent);
                 });
 
+                // Ajusta o zoom para mostrar todos os marcadores
                 const bounds = markerGroup.getBounds();
                 if (bounds.isValid()) {
-                    /*  globalMap.fitBounds(bounds, { padding: [30, 30] }); */
-                    // Visão mundial (zoom 2, centro no Atlântico)
-                    globalMap.setView([0, 0], 2);/*  */
+                    globalMap.fitBounds(bounds, { padding: [30, 30] });
                 }
-                /*  */
+
                 globalMap.invalidateSize();
             }, 300);
         }
