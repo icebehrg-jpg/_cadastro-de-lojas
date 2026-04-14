@@ -646,6 +646,40 @@
                 width: 100px;
             }
         }
+
+        /* Mapa em tela ampliada */
+        .modal-fullscreen {
+            width: 95vw;
+            max-width: 95vw;
+            height: 90vh;
+            margin: 0 auto;
+        }
+
+        .modal-fullscreen .modal-content {
+            height: 100%;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-fullscreen .modal-body {
+            flex: 1;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .modal-fullscreen #fullMapView {
+            height: 100%;
+            width: 100%;
+            border-radius: 0;
+        }
+
+        @media (max-width: 768px) {
+            .modal-fullscreen {
+                width: 98vw;
+                height: 85vh;
+            }
+        }
     </style>
 </head>
 
@@ -908,9 +942,9 @@
         </div>
     </div>
 
-    <!-- Modal Mapa Global -->
+    <!-- Modal Mapa Global - Tela ampliada -->
     <div class="modal fade" id="mapaModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" style="width: 90%; max-width: 1200px;">
+        <div class="modal-dialog modal-fullscreen" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -918,7 +952,7 @@
                     </h4>
                 </div>
                 <div class="modal-body" style="padding: 0;">
-                    <div id="fullMapView" style="height: 70vh; width: 100%; border-radius: 8px;"></div>
+                    <div id="fullMapView" style="height: 100%; width: 100%;"></div>
                 </div>
                 <div class="modal-footer">
                     <span class="pull-left" style="font-size: 0.75rem; color: #6c757d;">
@@ -950,8 +984,9 @@
             }
         });
 
-        const customIcon = new kalungaIcons({ iconUrl: 'https://static.kalunga.com.br/favicon-32x32.png' });
-
+        const customIcon = new kalungaIcons({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png'
+        });
         function getEnderecoSimples(loja) { return (loja.Endereço || "").split(" - ")[0].trim() || "—"; }
         function formatarHorario(h) { if (!h) return ""; return h.replace(/Segunda à Sábado/g, "Seg–Sáb").replace(/Domingos/g, "Dom").replace(/das /g, "").replace(/às /g, "–"); }
         function getHorariosFormatados(loja) { return [loja.Horario01, loja.Horario02, loja.Horario03].map(formatarHorario).filter(Boolean).join(" / ") || "Não informado"; }
