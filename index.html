@@ -5,317 +5,644 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>ERP Kalunga | Gestão de Lojas</title>
-    <!-- Bootstrap 5 + Icons + Fonts -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 3 + jQuery -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: DM Sans + DM Mono -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap"
         rel="stylesheet">
     <!-- Leaflet (mapa gratuito) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
+        :root {
+            --brand: #1a56db;
+            --brand-dark: #1240a8;
+            --brand-light: #e8efff;
+            --accent: #f0a500;
+            --bg: #f0f3f9;
+            --surface: #ffffff;
+            --border: #dde3ee;
+            --text-h: #111827;
+            --text-body: #374151;
+            --text-muted: #6b7280;
+            --green: #16a34a;
+            --green-bg: #dcfce7;
+            --red: #dc2626;
+            --red-bg: #fee2e2;
+            --radius: 8px;
+            --radius-lg: 14px;
+            --shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
         * {
-            font-family: 'Inter', sans-serif;
+            box-sizing: border-box;
         }
 
         body {
-            background-color: #f4f7fc;
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-body);
             margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
+            padding: 0;
+            font-size: 16px;
+            line-height: 1.4;
         }
 
-        .dashboard-container {
-            width: 80%;
-            max-width: 1400px;
-            background: transparent;
-        }
-
-        @media (max-width: 1200px) {
-            .dashboard-container {
-                width: 95%;
-            }
-        }
-
-        .top-bar-simple {
+        /* Header compacto com fontes maiores */
+        .app-header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 8px 20px;
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 1.2rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .top-bar-simple h2 {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin: 0;
-            color: #1e2a3e;
-        }
-
-        .row-custom {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.2rem;
+            align-items: center;
             flex-wrap: wrap;
+            gap: 8px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .card-custom {
-            flex: 1;
-            background: white;
-            border-radius: 1rem;
-            padding: 1rem 1.2rem;
-            border: 1px solid #e9edf2;
-            transition: all 0.2s;
-        }
-
-        .card-custom:hover {
-            background: #fefefe;
-        }
-
-        .card-title {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            font-weight: 600;
-            color: #5b7a9a;
-            letter-spacing: 0.3px;
-            margin-bottom: 0.4rem;
-        }
-
-        .card-number {
-            font-size: 2rem;
-            font-weight: 700;
-            line-height: 1.2;
-            color: #1a2c3e;
-        }
-
-        .service-badges {
+        .logo-area {
             display: flex;
-            gap: 1rem;
-            margin-top: 0.3rem;
-            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
         }
 
-        .service-item {
-            background: #f0f3fa;
-            border-radius: 30px;
-            padding: 0.2rem 0.7rem;
-            font-size: 0.7rem;
-            font-weight: 500;
-        }
-
-        .filters-bar {
-            background: white;
-            border-radius: 1rem;
-            padding: 0.8rem 1rem;
-            margin-bottom: 1.2rem;
-            border: 1px solid #e9edf2;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            align-items: flex-end;
-        }
-
-        .filter-group {
-            flex: 1;
-            min-width: 140px;
-        }
-
-        .filter-group label {
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: #5b7a9a;
-            margin-bottom: 0.2rem;
-            display: block;
-        }
-
-        .filter-group select,
-        .filter-group input {
-            font-size: 0.8rem;
-            padding: 0.3rem 0.6rem;
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background: var(--brand);
             border-radius: 8px;
-            border: 1px solid #dce3ec;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-h);
+        }
+
+        .logo-text span {
+            color: var(--brand);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-date {
+            background: var(--bg);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        /* Container principal */
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 16px 20px;
+        }
+
+        /* KPI Cards compactos com fontes maiores */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .kpi-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .kpi-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .kpi-icon.blue {
+            background: var(--brand-light);
+            color: var(--brand);
+        }
+
+        .kpi-icon.green {
+            background: var(--green-bg);
+            color: var(--green);
+        }
+
+        .kpi-icon.amber {
+            background: #fff7e0;
+            color: #c27800;
+        }
+
+        .kpi-body {
+            flex: 1;
+        }
+
+        .kpi-label {
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .kpi-number {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--text-h);
+            font-family: 'DM Mono', monospace;
+        }
+
+        .kpi-sub {
+            font-size: 1.0rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .service-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .service-tag {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-body);
+        }
+
+        /* Filtros compactos com fontes maiores */
+        .filters-panel {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 130px;
+        }
+
+        .filter-item label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        .filter-item select,
+        .filter-item input[type="text"] {
             width: 100%;
+            height: 34px;
+            font-size: 0.95rem;
+            font-family: 'DM Sans', sans-serif;
+            padding: 0 10px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-body);
+            background: var(--bg);
+            outline: none;
+        }
+
+        .filter-item select:focus,
+        .filter-item input:focus {
+            border-color: var(--brand);
+            background: var(--surface);
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
         }
 
         .btn-limpar {
-            background: transparent;
-            border: 1px solid #dce3ec;
-            border-radius: 30px;
-            padding: 0.3rem 1rem;
-            font-size: 0.75rem;
+            height: 34px;
+            padding: 0 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
         }
 
-        .table-wrapper {
-            background: white;
-            border-radius: 1rem;
+        .btn-limpar:hover {
+            border-color: var(--brand);
+            color: var(--brand);
+            background: var(--brand-light);
+        }
+
+        .filters-summary {
+            margin-top: 8px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        /* Tabela compacta com fontes maiores */
+        .table-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .table-card-header {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            background: #fafcfd;
+        }
+
+        .table-card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-h);
+        }
+
+        .table-card-title i {
+            color: var(--brand);
+        }
+
+        .table-count-badge {
+            background: var(--brand-light);
+            color: var(--brand);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .table-scroll {
             overflow-x: auto;
-            border: 1px solid #e9edf2;
         }
 
-        .table-kalunga {
+        table.kal-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.8rem;
+            font-size: 1.0rem;
         }
 
-        .table-kalunga th {
-            background: #f9fbfe;
-            padding: 0.75rem 0.8rem;
-            font-weight: 600;
-            color: #2c3e66;
-            border-bottom: 1px solid #e2e8f0;
+        .kal-table thead tr {
+            background: #f8fafd;
+        }
+
+        .kal-table th {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
             cursor: pointer;
             user-select: none;
             white-space: nowrap;
         }
 
-        .table-kalunga th i {
-            margin-left: 5px;
+        .kal-table th .sort-icon {
+            margin-left: 4px;
             font-size: 0.7rem;
-            opacity: 0.6;
+            opacity: 0.5;
         }
 
-        .table-kalunga td {
-            padding: 0.7rem 0.8rem;
-            border-bottom: 1px solid #f0f3fa;
+        .kal-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #f0f2f6;
             vertical-align: middle;
         }
 
-        .table-kalunga tbody tr:hover {
-            background-color: #f8fafd;
+        .kal-table tbody tr:hover {
+            background: #f8fafd;
+        }
+
+        .cell-code {
+            font-family: 'DM Mono', monospace;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--brand);
+        }
+
+        .cell-nome-primary {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-h);
+        }
+
+        .cell-nome-secondary {
+            font-size: 0.95rem;
+            color: var(--text-muted);
         }
 
         .badge-status {
-            padding: 0.2rem 0.6rem;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 700;
         }
 
         .badge-ativo {
-            background: #e0f2e9;
-            color: #1e6f5c;
+            background: var(--green-bg);
+            color: var(--green);
         }
 
         .badge-inativo {
-            background: #fee9e6;
-            color: #b91c1c;
+            background: var(--red-bg);
+            color: var(--red);
         }
 
-        .btn-icon {
-            background: transparent;
+        .badge-ativo::before,
+        .badge-inativo::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .badge-ativo::before {
+            background: var(--green);
+        }
+
+        .badge-inativo::before {
+            background: var(--red);
+        }
+
+        .btn-action {
+            width: 28px;
+            height: 28px;
             border: none;
-            color: #2c7da0;
-            font-size: 1rem;
+            background: var(--bg);
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.2s;
+            color: var(--brand);
+            font-size: 1rem;
+            transition: all 0.2s;
         }
 
-        .btn-icon:hover {
-            color: #1f5e7a;
+        .btn-action:hover {
+            background: var(--brand-light);
             transform: scale(1.05);
         }
 
-        /* Modal moderno responsivo */
-        .modal-modern .modal-content {
-            border-radius: 1.5rem;
+        /* Modais com fontes maiores */
+        .modal-content {
+            border-radius: var(--radius-lg);
             border: none;
-            overflow: hidden;
-            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.15);
         }
 
-        .modal-modern .modal-header {
-            background: #ffffff;
-            border-bottom: 1px solid #eef2fa;
-            padding: 1rem 1.5rem;
+        .modal-header {
+            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-h);
+        }
+
+        .modal-body {
+            padding: 16px;
+            font-size: 0.95rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border);
+            padding: 10px 16px;
         }
 
         .detail-section {
-            margin-bottom: 1.5rem;
+            margin-bottom: 16px;
         }
 
         .detail-section-title {
+            font-size: 0.95rem;
             font-weight: 700;
-            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #5b7a9a;
-            margin-bottom: 0.8rem;
-            border-left: 3px solid #2c7da0;
-            padding-left: 0.6rem;
+            color: var(--text-muted);
+            border-left: 3px solid var(--brand);
+            padding-left: 8px;
+            margin-bottom: 8px;
         }
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 0.5rem 1rem;
-        }
-
-        .info-item {
+        .info-list {
             display: flex;
-            border-bottom: 1px dashed #edf2f7;
-            padding: 0.3rem 0;
-            align-items: baseline;
+            flex-direction: column;
+            gap: 0;
         }
 
-        .info-label {
-            width: 110px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            color: #5b7a9a;
+        .info-row {
+            display: flex;
+            padding: 5px 0;
+            border-bottom: 1px dashed var(--border);
+            font-size: 0.95rem;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-key {
+            width: 120px;
             flex-shrink: 0;
+            font-weight: 600;
+            color: var(--text-muted);
         }
 
-        .info-value {
+        .info-val {
             flex: 1;
-            font-size: 0.8rem;
-            color: #1e2f3e;
-            word-break: break-word;
+            color: var(--text-h);
         }
 
-        .horario-badge {
-            background: #eef6ff;
-            border-radius: 30px;
-            padding: 0.2rem 0.7rem;
-            font-size: 0.7rem;
+        .horario-pill {
             display: inline-block;
-            margin-right: 0.5rem;
-            margin-bottom: 0.3rem;
+            background: #eef3ff;
+            border: 1px solid #c7d9ff;
+            color: var(--brand);
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-size: 0.8rem;
+            margin: 0 4px 4px 0;
+            font-weight: 500;
         }
 
         #modalMapView {
-            height: 240px;
+            height: 200px;
             width: 100%;
-            border-radius: 1rem;
+            border-radius: var(--radius);
             background: #eef2f9;
-            margin-top: 0.5rem;
+            margin-top: 6px;
         }
 
-        .form-control-sm-custom {
-            font-size: 0.8rem;
-            padding: 0.3rem 0.6rem;
-            border-radius: 8px;
-            border: 1px solid #dce3ec;
+        /* Formulários */
+        .form-label-small {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .form-ctrl {
             width: 100%;
+            height: 32px;
+            font-size: 0.9rem;
+            font-family: 'DM Sans', sans-serif;
+            padding: 0 8px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--bg);
+            outline: none;
         }
 
+        .form-ctrl:focus {
+            border-color: var(--brand);
+            background: var(--surface);
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+        }
+
+        .form-ctrl[readonly] {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        select.form-ctrl {
+            appearance: auto;
+        }
+
+        /* Botões */
+        .btn-primary-kal {
+            background: var(--brand);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 5px 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary-kal:hover {
+            background: var(--brand-dark);
+        }
+
+        .btn-secondary-kal {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 5px 14px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary-kal:hover {
+            border-color: var(--brand);
+            color: var(--brand);
+        }
+
+        .table-empty {
+            text-align: center;
+            padding: 32px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .table-empty i {
+            font-size: 1.5rem;
+            opacity: 0.4;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Responsivo */
         @media (max-width: 768px) {
-            .info-grid {
+            .kpi-grid {
                 grid-template-columns: 1fr;
+                gap: 10px;
             }
 
-            .row-custom {
+            .filters-row {
                 flex-direction: column;
-                gap: 0.8rem;
             }
 
-            .info-label {
+            .main-container {
+                padding: 12px;
+            }
+
+            .info-key {
                 width: 100px;
             }
         }
@@ -323,124 +650,172 @@
 </head>
 
 <body>
-    <div class="dashboard-container">
-        <div class="top-bar-simple">
-            <h2><i class="fas fa-store me-2"></i>Gestão de Lojas</h2>
-            <div class="date"><i class="far fa-calendar-alt me-1"></i> <span id="dataAtual"></span></div>
-        </div>
 
-        <!-- Cards -->
-        <div class="row-custom">
-            <div class="card-custom">
-                <div class="card-title"><i class="fas fa-check-circle me-1"></i> Lojas Ativas</div>
-                <div class="card-number" id="cardAtivas">0</div>
-                <div class="card-sub">Total em operação</div>
+    <header class="app-header">
+        <div class="logo-area">
+            <div class="logo-icon"><i class="fas fa-store"></i></div>
+            <div class="logo-text">Kalunga <span>ERP</span></div>
+        </div>
+        <div class="header-right">
+            <div class="header-date"><i class="far fa-calendar-alt"></i> <span id="dataAtual"></span></div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- KPI Grid -->
+        <div class="kpi-grid">
+            <div class="kpi-card" data-map="false">
+                <div class="kpi-icon green"><i class="fas fa-check-circle"></i></div>
+                <div class="kpi-body">
+                    <div class="kpi-label">Lojas Ativas</div>
+                    <div class="kpi-number" id="cardAtivas">–</div>
+                    <div class="kpi-sub">Total em operação</div>
+                </div>
             </div>
-            <div class="card-custom">
-                <div class="card-title"><i class="fas fa-globe-americas me-1"></i> Cobertura</div>
-                <div class="card-number" id="cardEstados">0</div>
-                <div class="card-sub" id="cardCidadesRegioes">estados · 0 cidades · 0 regiões</div>
+            <div class="kpi-card" data-map="true" id="mapaCard">
+                <div class="kpi-icon blue"><i class="fas fa-globe-americas"></i></div>
+                <div class="kpi-body">
+                    <div class="kpi-label">Cobertura</div>
+                    <div class="kpi-number" id="cardEstados">–</div>
+                    <div class="kpi-sub" id="cardCidadesRegioes">estados · cidades · regiões</div>
+                </div>
             </div>
-            <div class="card-custom">
-                <div class="card-title"><i class="fas fa-truck me-1"></i> Serviços</div>
-                <div class="service-badges"><span class="service-item"><i class="fas fa-box"></i> Pickup: <span
-                            id="pickupCount">0</span></span><span class="service-item"><i class="fas fa-motorcycle"></i>
-                        Rappi: <span id="rappiCount">0</span></span><span class="service-item"><i
-                            class="fas fa-mall"></i> Shopping: <span id="shoppingCount">0</span></span></div>
+            <div class="kpi-card" data-map="false">
+                <div class="kpi-icon amber"><i class="fas fa-truck"></i></div>
+                <div class="kpi-body">
+                    <div class="kpi-label">Serviços Ativos</div>
+                    <div class="service-tags">
+                        <span class="service-tag"><i class="fas fa-box"></i> Pickup: <strong
+                                id="pickupCount">–</strong></span>
+                        <span class="service-tag"><i class="fas fa-motorcycle"></i> Rappi: <strong
+                                id="rappiCount">–</strong></span>
+                        <span class="service-tag"><i class="fas fa-building"></i> Shopping: <strong
+                                id="shoppingCount">–</strong></span>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Filtros -->
-        <div class="filters-bar">
-            <div class="filter-group"><label>Status</label><select id="filterStatus">
-                    <option value="all">Todos</option>
-                    <option value="Ativo">Ativo</option>
-                    <option value="Inativo">Inativo</option>
-                </select></div>
-            <div class="filter-group"><label>Região</label><select id="filterRegiao">
-                    <option value="all">Todas</option>
-                    <option value="Sudeste">Sudeste</option>
-                    <option value="Sul">Sul</option>
-                    <option value="Centro-Oeste">Centro-Oeste</option>
-                    <option value="Nordeste">Nordeste</option>
-                    <option value="Norte">Norte</option>
-                </select></div>
-            <div class="filter-group"><label>Busca</label><input type="text" id="searchInput"
-                    placeholder="Código, nome ou cidade"></div>
-            <div class="filter-group" style="flex: 0.3;"><button id="btnLimpar" class="btn-limpar w-100"><i
-                        class="fas fa-eraser"></i> Limpar</button></div>
+        <div class="filters-panel">
+            <div class="filters-row">
+                <div class="filter-item">
+                    <label>Status</label>
+                    <select id="filterStatus">
+                        <option value="all">Todos</option>
+                        <option value="Ativo">Ativo</option>
+                        <option value="Inativo">Inativo</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label>Região</label>
+                    <select id="filterRegiao">
+                        <option value="all">Todas</option>
+                        <option value="Sudeste">Sudeste</option>
+                        <option value="Sul">Sul</option>
+                        <option value="Centro-Oeste">Centro-Oeste</option>
+                        <option value="Nordeste">Nordeste</option>
+                        <option value="Norte">Norte</option>
+                    </select>
+                </div>
+                <div class="filter-item" style="flex:2;">
+                    <label>Busca rápida</label>
+                    <input type="text" id="searchInput" placeholder="Código, nome ou cidade…">
+                </div>
+                <button class="btn-limpar" id="btnLimpar"><i class="fas fa-eraser"></i> Limpar</button>
+            </div>
+            <div class="filters-summary">Exibindo <strong id="countVisible">0</strong> de <strong
+                    id="countTotal">0</strong> lojas</div>
         </div>
 
         <!-- Tabela -->
-        <div class="table-wrapper">
-            <table class="table-kalunga" id="lojasTable">
-                <thead>
-                    <tr>
-                        <th data-col="CD_Filial">Código <i class="fas fa-sort"></i></th>
-                        <th data-col="NomeSistema">Nome Loja <i class="fas fa-sort"></i></th>
-                        <th data-col="NomeSite">Nome Conhecido <i class="fas fa-sort"></i></th>
-                        <th data-col="EnderecoSimples">Endereço <i class="fas fa-sort"></i></th>
-                        <th data-col="UF">UF <i class="fas fa-sort"></i></th>
-                        <th data-col="Municipio">Cidade <i class="fas fa-sort"></i></th>
-                        <th data-col="status">Status <i class="fas fa-sort"></i></th>
-                        <th style="width: 50px;">Ver</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <tr>
-                        <td colspan="8" class="text-center py-4">Carregando...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- MODAL VISUALIZAÇÃO (moderno, responsivo, com botão editar) -->
-    <div class="modal fade modal-modern" id="viewModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold"><i class="fas fa-building me-2"></i>Detalhes da Loja</h5><button
-                        type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" id="viewModalBody"></div>
-                <div class="modal-footer border-0"><button type="button" class="btn btn-sm btn-primary"
-                        id="btnEditarDoModal">Editar Loja</button><button type="button" class="btn btn-sm btn-secondary"
-                        data-bs-dismiss="modal">Fechar</button></div>
+        <div class="table-card">
+            <div class="table-card-header">
+                <h2 class="table-card-title"><i class="fas fa-list"></i> Listagem de Lojas <span
+                        class="table-count-badge" id="tableBadge">0</span></h2>
+            </div>
+            <div class="table-scroll">
+                <table class="kal-table" id="lojasTable">
+                    <thead>
+                        <tr>
+                            <th data-col="CD_Filial">Código <i class="fas fa-sort sort-icon"></i></th>
+                            <th data-col="NomeSistema">Loja <i class="fas fa-sort sort-icon"></i></th>
+                            <th data-col="EnderecoSimples" class="hidden-xs">Endereço <i
+                                    class="fas fa-sort sort-icon"></i></th>
+                            <th data-col="UF">UF <i class="fas fa-sort sort-icon"></i></th>
+                            <th data-col="Municipio" class="hidden-xs">Cidade <i class="fas fa-sort sort-icon"></i></th>
+                            <th data-col="status">Status <i class="fas fa-sort sort-icon"></i></th>
+                            <th style="width:50px; text-align:center;">Ver</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td colspan="7" class="table-empty"><i class="fas fa-spinner fa-pulse"></i> Carregando
+                                lojas...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
-    <!-- MODAL EDIÇÃO (mesmo do anterior) -->
-    <div class="modal fade modal-modern" id="editModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+    <!-- Modal Visualização -->
+    <div class="modal fade" id="viewModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold"><i class="fas fa-edit me-2"></i>Editar Loja</h5><button
-                        type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><i class="fas fa-building"></i> Detalhes da Loja</h4>
+                </div>
+                <div class="modal-body" id="viewModalBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-primary-kal" id="btnEditarDoModal"><i class="fas fa-edit"></i>
+                        Editar Loja</button>
+                    <button type="button" class="btn-secondary-kal" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edição -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><i class="fas fa-edit"></i> Editar Loja</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="editForm">
-                        <input type="hidden" id="editId">
-                        <div class="row g-2">
-                            <div class="col-md-6"><label class="form-label small fw-semibold">Código
-                                    Filial</label><input type="text" id="editCdFilial"
-                                    class="form-control form-control-sm-custom" readonly></div>
-                            <div class="col-md-6"><label class="form-label small fw-semibold">Nome Sistema</label><input
-                                    type="text" id="editNomeSistema" class="form-control form-control-sm-custom"></div>
-                            <div class="col-md-6"><label class="form-label small fw-semibold">Nome Conhecido (Nome
-                                    Site)</label><input type="text" id="editNomeSite"
-                                    class="form-control form-control-sm-custom"></div>
-                            <div class="col-md-6"><label class="form-label small fw-semibold">CEP <i
-                                        class="fas fa-search text-primary" id="buscarCepBtn"
-                                        style="cursor:pointer;"></i></label><input type="text" id="editCep"
-                                    class="form-control form-control-sm-custom" placeholder="Digite o CEP"></div>
-                            <div class="col-md-6"><label class="form-label small fw-semibold">Endereço</label><input
-                                    type="text" id="editEndereco" class="form-control form-control-sm-custom"></div>
-                            <div class="col-md-3"><label class="form-label small fw-semibold">Município</label><input
-                                    type="text" id="editMunicipio" class="form-control form-control-sm-custom"></div>
-                            <div class="col-md-3"><label class="form-label small fw-semibold">UF</label><select
-                                    id="editUf" class="form-select form-select-sm">
+                    <input type="hidden" id="editId">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group-small"><label class="form-label-small">Código Filial</label><input
+                                    type="text" id="editCdFilial" class="form-ctrl" readonly></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-small"><label class="form-label-small">Nome Sistema</label><input
+                                    type="text" id="editNomeSistema" class="form-ctrl"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-small"><label class="form-label-small">Nome Conhecido
+                                    (Site)</label><input type="text" id="editNomeSite" class="form-ctrl"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-small"><label class="form-label-small">CEP <i class="fas fa-search"
+                                        id="buscarCepBtn" style="color:var(--brand);cursor:pointer;"></i></label><input
+                                    type="text" id="editCep" class="form-ctrl" placeholder="Digite o CEP"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-small"><label class="form-label-small">Endereço</label><input
+                                    type="text" id="editEndereco" class="form-ctrl"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group-small"><label class="form-label-small">Município</label><input
+                                    type="text" id="editMunicipio" class="form-ctrl"></div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group-small"><label class="form-label-small">UF</label><select id="editUf"
+                                    class="form-ctrl">
                                     <option value="SP">SP</option>
                                     <option value="RJ">RJ</option>
                                     <option value="MG">MG</option>
@@ -469,85 +844,109 @@
                                     <option value="AP">AP</option>
                                     <option value="RR">RR</option>
                                 </select></div>
-                            <div class="col-md-6"><label class="form-label small fw-semibold">Shopping</label><input
-                                    type="text" id="editShopping" class="form-control form-control-sm-custom"></div>
-                            <div class="col-md-6"><label class="form-label small fw-semibold">Status</label><select
-                                    id="editStatus" class="form-select form-select-sm">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-small"><label class="form-label-small">Shopping</label><input
+                                    type="text" id="editShopping" class="form-ctrl"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-small"><label class="form-label-small">Status</label><select
+                                    id="editStatus" class="form-ctrl">
                                     <option value="Ativo">Ativo</option>
                                     <option value="Inativo">Inativo</option>
                                 </select></div>
-                            <div class="col-md-12"><label class="form-label small fw-semibold">Horário 01</label><input
-                                    type="text" id="editHorario01" class="form-control form-control-sm-custom"></div>
-                            <div class="col-md-12"><label class="form-label small fw-semibold">Horário 02</label><input
-                                    type="text" id="editHorario02" class="form-control form-control-sm-custom"></div>
-                            <div class="col-md-12"><label class="form-label small fw-semibold">Horário 03</label><input
-                                    type="text" id="editHorario03" class="form-control form-control-sm-custom"></div>
-                            <div class="col-md-4"><label class="form-label small fw-semibold">PickUp In
-                                    Store</label><select id="editPickup" class="form-select form-select-sm">
-                                    <option value="Sim">Sim</option>
-                                    <option value="Não">Não</option>
-                                </select></div>
-                            <div class="col-md-4"><label class="form-label small fw-semibold">Ativo Rappi</label><select
-                                    id="editRappi" class="form-select form-select-sm">
-                                    <option value="Sim">Sim</option>
-                                    <option value="Não">Não</option>
-                                </select></div>
-                            <div class="col-md-4"><label class="form-label small fw-semibold">Kiosque
-                                    Pickup</label><select id="editKiosque" class="form-select form-select-sm">
-                                    <option value="Sim">Sim</option>
-                                    <option value="Não">Não</option>
-                                </select></div>
-                            <div class="col-md-6"><label class="form-label small fw-semibold">Latitude</label><input
-                                    type="text" id="editLatitude" class="form-control form-control-sm-custom"></div>
-                            <div class="col-md-6"><label class="form-label small fw-semibold">Longitude</label><input
-                                    type="text" id="editLongitude" class="form-control form-control-sm-custom"></div>
                         </div>
-                    </form>
+                        <div class="col-md-12">
+                            <div class="form-group-small"><label class="form-label-small">Horário 01</label><input
+                                    type="text" id="editHorario01" class="form-ctrl"></div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group-small"><label class="form-label-small">Horário 02</label><input
+                                    type="text" id="editHorario02" class="form-ctrl"></div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group-small"><label class="form-label-small">Horário 03</label><input
+                                    type="text" id="editHorario03" class="form-ctrl"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group-small"><label class="form-label-small">PickUp In Store</label><select
+                                    id="editPickup" class="form-ctrl">
+                                    <option value="Sim">Sim</option>
+                                    <option value="Não">Não</option>
+                                </select></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group-small"><label class="form-label-small">Ativo Rappi</label><select
+                                    id="editRappi" class="form-ctrl">
+                                    <option value="Sim">Sim</option>
+                                    <option value="Não">Não</option>
+                                </select></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group-small"><label class="form-label-small">Kiosque Pickup</label><select
+                                    id="editKiosque" class="form-ctrl">
+                                    <option value="Sim">Sim</option>
+                                    <option value="Não">Não</option>
+                                </select></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-small"><label class="form-label-small">Latitude</label><input
+                                    type="text" id="editLatitude" class="form-ctrl"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-small"><label class="form-label-small">Longitude</label><input
+                                    type="text" id="editLongitude" class="form-ctrl"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer border-0"><button type="button" class="btn btn-sm btn-secondary"
-                        data-bs-dismiss="modal">Cancelar</button><button type="button" id="btnSalvarEdicao"
-                        class="btn btn-sm btn-primary">Salvar Alterações</button></div>
+                <div class="modal-footer">
+                    <button type="button" id="btnSalvarEdicao" class="btn-primary-kal"><i class="fas fa-save"></i>
+                        Salvar Alterações</button>
+                    <button type="button" class="btn-secondary-kal" data-dismiss="modal">Cancelar</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Modal Mapa Global -->
+    <div class="modal fade" id="mapaModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" style="width: 90%; max-width: 1200px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><i class="fas fa-map-marked-alt"></i> Mapa de Cobertura – Todas as Lojas
+                    </h4>
+                </div>
+                <div class="modal-body" style="padding: 0;">
+                    <div id="fullMapView" style="height: 70vh; width: 100%; border-radius: 8px;"></div>
+                </div>
+                <div class="modal-footer">
+                    <span class="pull-left" style="font-size: 0.75rem; color: #6c757d;">
+                        <i class="fas fa-map-pin"></i> Cada marcador representa uma loja. Clique para ver detalhes.
+                    </span>
+                    <button type="button" class="btn-secondary-kal" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ================= CONFIGURAÇÃO =================
         const API_URL = "https://script.google.com/macros/s/AKfycbxHUV8v1m00g-NTluSifkzrfkxFiOfpnjGcg6AAzxNsgWIqPSxJTK7WV7l9c26qQrUr/exec";
         let lojasData = [], filteredData = [];
         let currentSort = { col: null, dir: 'asc' };
-        let currentViewLoja = null; // guarda a loja sendo visualizada
+        let currentViewLoja = null;
+        let globalMap = null;  // referência para o mapa global
 
-        // Helper: extrair apenas rua+numero do endereço
-        function getEnderecoSimples(loja) {
-            let end = loja.Endereço || "";
-            // remove possível complemento após vírgula? Mantém o que vier, mas sem shopping/CEP
-            return end.split(" - ")[0].trim() || "Não informado";
+        function getEnderecoSimples(loja) { return (loja.Endereço || "").split(" - ")[0].trim() || "—"; }
+        function formatarHorario(h) { if (!h) return ""; return h.replace(/Segunda à Sábado/g, "Seg–Sáb").replace(/Domingos/g, "Dom").replace(/das /g, "").replace(/às /g, "–"); }
+        function getHorariosFormatados(loja) { return [loja.Horario01, loja.Horario02, loja.Horario03].map(formatarHorario).filter(Boolean).join(" / ") || "Não informado"; }
+        function mapearRegiao(uf) {
+            const map = { Sudeste: ["SP", "RJ", "MG", "ES"], Sul: ["PR", "SC", "RS"], "Centro-Oeste": ["DF", "GO", "MT", "MS"], Nordeste: ["BA", "SE", "AL", "PE", "PB", "RN", "CE", "PI", "MA"], Norte: ["AM", "RR", "AP", "PA", "TO", "RO", "AC"] };
+            for (let [r, ufs] of Object.entries(map)) if (ufs.includes(uf)) return r;
+            return "Outra";
         }
 
-        function getEnderecoCompleto(loja) {
-            let parts = [loja.Endereço, loja.Shopping ? `(${loja.Shopping})` : "", loja.CEP ? `CEP: ${loja.CEP}` : ""].filter(Boolean);
-            return parts.join(" - ") || "Não informado";
-        }
-
-        function formatarHorario(horarioStr) {
-            if (!horarioStr) return "";
-            let str = horarioStr.replace(/Segunda à Sábado/g, "Segunda a Sábado");
-            str = str.replace(/Domingos/g, "Domingo");
-            str = str.replace(/das /g, "").replace(/às /g, "-");
-            return str;
-        }
-
-        function getHorariosFormatados(loja) {
-            let h1 = formatarHorario(loja.Horario01);
-            let h2 = formatarHorario(loja.Horario02);
-            let h3 = formatarHorario(loja.Horario03);
-            let horarios = [h1, h2, h3].filter(h => h);
-            return horarios.length ? horarios.join(" / ") : "Não informado";
-        }
-
-        // Carregar dados
         async function carregarLojas() {
             try {
                 const resp = await fetch(API_URL);
@@ -556,21 +955,23 @@
                     lojasData = data.lojas;
                     aplicarFiltros();
                     atualizarCards();
-                } else throw new Error(data.error);
-            } catch (err) { tableBody.innerHTML = `<tr><td colspan="8" class="text-danger">Erro: ${err.message}</td></tr>`; }
+                } else throw new Error(data.error || "Erro");
+            } catch (err) {
+                document.getElementById("tableBody").innerHTML = `<tr><td colspan="7" class="table-empty"><i class="fas fa-exclamation-triangle"></i> Erro: ${err.message}</td></tr>`;
+            }
         }
 
         function atualizarCards() {
             const ativas = lojasData.filter(l => l.status === "Ativo").length;
-            document.getElementById("cardAtivas").innerText = ativas;
             const estados = new Set(lojasData.map(l => l.UF).filter(Boolean));
             const cidades = new Set(lojasData.map(l => `${l.Municipio}|${l.UF}`).filter(Boolean));
             const regioes = new Set(lojasData.map(l => l.regiao).filter(Boolean));
-            document.getElementById("cardEstados").innerText = estados.size;
-            document.getElementById("cardCidadesRegioes").innerHTML = `${estados.size} estados · ${cidades.size} cidades · ${regioes.size} regiões`;
             const pickup = lojasData.filter(l => l.PickUpInStore === "Sim").length;
             const rappi = lojasData.filter(l => l.AtivoRappi === "Sim").length;
-            const shopping = lojasData.filter(l => l.Shopping && l.Shopping.trim() !== "").length;
+            const shopping = lojasData.filter(l => l.Shopping?.trim()).length;
+            document.getElementById("cardAtivas").innerText = ativas;
+            document.getElementById("cardEstados").innerText = estados.size;
+            document.getElementById("cardCidadesRegioes").innerText = `${estados.size} estados · ${cidades.size} cidades · ${regioes.size} regiões`;
             document.getElementById("pickupCount").innerText = pickup;
             document.getElementById("rappiCount").innerText = rappi;
             document.getElementById("shoppingCount").innerText = shopping;
@@ -578,38 +979,35 @@
 
         function sortData(data, col, dir) {
             return [...data].sort((a, b) => {
-                let valA, valB;
-                if (col === 'EnderecoSimples') { valA = getEnderecoSimples(a); valB = getEnderecoSimples(b); }
-                else if (col === 'NomeSite') { valA = a.NomeSite || ""; valB = b.NomeSite || ""; }
-                else if (col === 'status') { valA = a.status; valB = b.status; }
-                else { valA = a[col] || ""; valB = b[col] || ""; }
-                if (typeof valA === 'string') valA = valA.toLowerCase();
-                if (typeof valB === 'string') valB = valB.toLowerCase();
-                if (valA < valB) return dir === 'asc' ? -1 : 1;
-                if (valA > valB) return dir === 'asc' ? 1 : -1;
-                return 0;
+                let vA = col === 'EnderecoSimples' ? getEnderecoSimples(a) : (a[col] || "");
+                let vB = col === 'EnderecoSimples' ? getEnderecoSimples(b) : (b[col] || "");
+                if (typeof vA === 'string') vA = vA.toLowerCase();
+                if (typeof vB === 'string') vB = vB.toLowerCase();
+                return vA < vB ? (dir === 'asc' ? -1 : 1) : vA > vB ? (dir === 'asc' ? 1 : -1) : 0;
             });
         }
 
         function renderizarTabela() {
-            if (!filteredData.length) { tableBody.innerHTML = `<tr><td colspan="8" class="text-center">Nenhuma loja encontrada</td></tr>`; return; }
-            let dataToRender = filteredData;
-            if (currentSort.col) dataToRender = sortData(dataToRender, currentSort.col, currentSort.dir);
-            let html = "";
-            for (let loja of dataToRender) {
-                const statusClass = loja.status === "Ativo" ? "badge-ativo" : "badge-inativo";
-                html += `<tr>
-                        <td class="fw-semibold">${loja.CD_Filial || "-"}</td>
-                        <td>${loja.NomeSistema || "-"}</td>
-                        <td>${loja.NomeSite || "-"}</td>
-                        <td>${getEnderecoSimples(loja)}</td>
-                        <td>${loja.UF || "-"}</td>
-                        <td>${loja.Municipio || "-"}</td>
-                        <td><span class="badge-status ${statusClass}">${loja.status}</span></td>
-                        <td class="text-center"><button class="btn-icon" onclick="visualizarLoja('${loja.CD_Filial}')" title="Visualizar"><i class="fas fa-eye"></i></button></td>
-                     </tr>`;
+            if (!filteredData.length) {
+                document.getElementById("tableBody").innerHTML = `<tr><td colspan="7" class="table-empty"><i class="fas fa-search"></i> Nenhuma loja encontrada</td></tr>`;
+                return;
             }
-            tableBody.innerHTML = html;
+            let data = filteredData;
+            if (currentSort.col) data = sortData(data, currentSort.col, currentSort.dir);
+            const html = data.map(loja => {
+                const statusClass = loja.status === "Ativo" ? "badge-ativo" : "badge-inativo";
+                const nomeSite = loja.NomeSite ? `<div class="cell-nome-secondary">${loja.NomeSite}</div>` : '';
+                return `<tr>
+                    <td><span class="cell-code">${loja.CD_Filial || "—"}</span></td>
+                    <td><div class="cell-nome-primary">${loja.NomeSistema || "—"}</div>${nomeSite}</td>
+                    <td class="hidden-xs">${getEnderecoSimples(loja)}</td>
+                    <td>${loja.UF || "—"}</td>
+                    <td class="hidden-xs">${loja.Municipio || "—"}</td>
+                    <td><span class="badge-status ${statusClass}">${loja.status}</span></td>
+                    <td style="text-align:center;"><button class="btn-action" onclick="visualizarLoja('${loja.CD_Filial}')" title="Ver detalhes"><i class="fas fa-eye"></i></button></td>
+                </tr>`;
+            }).join('');
+            document.getElementById("tableBody").innerHTML = html;
         }
 
         function aplicarFiltros() {
@@ -619,68 +1017,74 @@
             const busca = document.getElementById("searchInput").value.toLowerCase().trim();
             if (status !== "all") dados = dados.filter(l => l.status === status);
             if (regiao !== "all") dados = dados.filter(l => l.regiao === regiao);
-            if (busca) dados = dados.filter(l => (l.CD_Filial && l.CD_Filial.toString().includes(busca)) || (l.NomeSistema && l.NomeSistema.toLowerCase().includes(busca)) || (l.Municipio && l.Municipio.toLowerCase().includes(busca)));
+            if (busca) dados = dados.filter(l => (l.CD_Filial?.toString().includes(busca)) || (l.NomeSistema?.toLowerCase().includes(busca)) || (l.Municipio?.toLowerCase().includes(busca)) || (l.NomeSite?.toLowerCase().includes(busca)));
             filteredData = dados;
+            document.getElementById("countVisible").innerText = filteredData.length;
+            document.getElementById("countTotal").innerText = lojasData.length;
+            document.getElementById("tableBadge").innerText = filteredData.length;
             renderizarTabela();
         }
 
-        // Visualização moderna com botão editar
         window.visualizarLoja = function (codigo) {
             const loja = lojasData.find(l => l.CD_Filial == codigo);
             if (!loja) return;
             currentViewLoja = loja;
             const horarios = getHorariosFormatados(loja);
-            const modalBody = document.getElementById("viewModalBody");
-            modalBody.innerHTML = `
+            const statusClass = loja.status === "Ativo" ? "badge-ativo" : "badge-inativo";
+            const emojiSim = '<i class="fas fa-check-circle" style="color:var(--green)"></i>';
+            const emojiNao = '<i class="fas fa-times-circle" style="color:var(--text-muted)"></i>';
+            const horariosHTML = horarios.split("/").map(h => `<span class="horario-pill">${h.trim()}</span>`).join("");
+            document.getElementById("viewModalBody").innerHTML = `
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-7">
                     <div class="detail-section"><div class="detail-section-title">Informações Gerais</div>
-                        <div class="info-grid">
-                            <div class="info-item"><div class="info-label">Código</div><div class="info-value">${loja.CD_Filial}</div></div>
-                            <div class="info-item"><div class="info-label">Nome Loja</div><div class="info-value">${loja.NomeSistema}</div></div>
-                            <div class="info-item"><div class="info-label">Nome Conhecido</div><div class="info-value">${loja.NomeSite || "-"}</div></div>
-                            <div class="info-item"><div class="info-label">Status</div><div class="info-value"><span class="badge-status ${loja.status === 'Ativo' ? 'badge-ativo' : 'badge-inativo'}">${loja.status}</span></div></div>
-                            <div class="info-item"><div class="info-label">Região</div><div class="info-value">${loja.regiao}</div></div>
-                            <div class="info-item"><div class="info-label">Município/UF</div><div class="info-value">${loja.Municipio}/${loja.UF}</div></div>
-                            <div class="info-item"><div class="info-label">Endereço</div><div class="info-value">${loja.Endereço || "-"}</div></div>
-                            <div class="info-item"><div class="info-label">Shopping</div><div class="info-value">${loja.Shopping || "-"}</div></div>
-                            <div class="info-item"><div class="info-label">CEP</div><div class="info-value">${loja.CEP || "-"}</div></div>
+                        <div class="info-list">
+                            <div class="info-row"><span class="info-key">Código</span><span class="info-val"><span class="cell-code">${loja.CD_Filial}</span></span></div>
+                            <div class="info-row"><span class="info-key">Nome Sistema</span><span class="info-val">${loja.NomeSistema || "—"}</span></div>
+                            <div class="info-row"><span class="info-key">Nome Conhecido</span><span class="info-val">${loja.NomeSite || "—"}</span></div>
+                            <div class="info-row"><span class="info-key">Status</span><span class="info-val"><span class="badge-status ${statusClass}">${loja.status}</span></span></div>
+                            <div class="info-row"><span class="info-key">Região</span><span class="info-val">${loja.regiao || "—"}</span></div>
+                            <div class="info-row"><span class="info-key">Município/UF</span><span class="info-val">${loja.Municipio || "—"} / ${loja.UF || "—"}</span></div>
+                            <div class="info-row"><span class="info-key">Endereço</span><span class="info-val">${loja.Endereço || "—"}</span></div>
+                            <div class="info-row"><span class="info-key">Shopping</span><span class="info-val">${loja.Shopping || "—"}</span></div>
+                            <div class="info-row"><span class="info-key">CEP</span><span class="info-val">${loja.CEP || "—"}</span></div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="detail-section"><div class="detail-section-title">Horários</div><div class="mb-2">${horarios.split("/").map(h => `<span class="horario-badge">${h.trim()}</span>`).join("")}</div></div>
+                <div class="col-md-5">
+                    <div class="detail-section"><div class="detail-section-title">Horários</div><div>${horariosHTML}</div></div>
                     <div class="detail-section"><div class="detail-section-title">Serviços</div>
-                        <div class="info-grid">
-                            <div class="info-item"><div class="info-label">PickUp In Store</div><div class="info-value">${loja.PickUpInStore === "Sim" ? "✅ Sim" : "❌ Não"}</div></div>
-                            <div class="info-item"><div class="info-label">Ativo Rappi</div><div class="info-value">${loja.AtivoRappi === "Sim" ? "✅ Sim" : "❌ Não"}</div></div>
-                            <div class="info-item"><div class="info-label">Kiosque Pickup</div><div class="info-value">${loja.Kiosque_Pickup === "Sim" ? "✅ Sim" : "❌ Não"}</div></div>
-                            <div class="info-item"><div class="info-label">Entrega Loja</div><div class="info-value">${loja.Entrega_Loja === "Sim" ? "✅ Sim" : "❌ Não"}</div></div>
+                        <div class="info-list">
+                            <div class="info-row"><span class="info-key">PickUp In Store</span><span class="info-val">${loja.PickUpInStore === "Sim" ? emojiSim : emojiNao}</span></div>
+                            <div class="info-row"><span class="info-key">Ativo Rappi</span><span class="info-val">${loja.AtivoRappi === "Sim" ? emojiSim : emojiNao}</span></div>
+                            <div class="info-row"><span class="info-key">Kiosque Pickup</span><span class="info-val">${loja.Kiosque_Pickup === "Sim" ? emojiSim : emojiNao}</span></div>
+                            <div class="info-row"><span class="info-key">Entrega Loja</span><span class="info-val">${loja.Entrega_Loja === "Sim" ? emojiSim : emojiNao}</span></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="detail-section"><div class="detail-section-title">Localização no Mapa</div><div id="modalMapView" style="height:240px; border-radius:1rem;"></div></div>
-        `;
-            const modal = new bootstrap.Modal(document.getElementById("viewModal"));
-            modal.show();
+            <div class="detail-section"><div class="detail-section-title">Localização</div><div id="modalMapView"></div></div>`;
+            $('#viewModal').modal('show');
             setTimeout(() => {
                 const mapDiv = document.getElementById("modalMapView");
-                if (mapDiv) {
-                    const lat = parseFloat(loja.Latitude);
-                    const lng = parseFloat(loja.Longitude);
-                    let mapLat = -23.5505, mapLng = -46.6333, zoom = 12;
-                    if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) { mapLat = lat; mapLng = lng; zoom = 15; }
-                    const map = L.map(mapDiv).setView([mapLat, mapLng], zoom);
-                    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>' }).addTo(map);
-                    if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) L.marker([lat, lng]).addTo(map).bindPopup(loja.NomeSistema).openPopup();
-                    else L.marker([mapLat, mapLng]).addTo(map).bindPopup("Localização aproximada").openPopup();
-                    map.invalidateSize();
-                }
+                if (!mapDiv) return;
+                const lat = parseFloat(loja.Latitude), lng = parseFloat(loja.Longitude);
+                let mLat = -23.5505, mLng = -46.6333, zoom = 12;
+                const hasCoord = !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0;
+                if (hasCoord) { mLat = lat; mLng = lng; zoom = 15; }
+                const map = L.map(mapDiv).setView([mLat, mLng], zoom);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>' }).addTo(map);
+                const marker = hasCoord ? [lat, lng] : [mLat, mLng];
+                L.marker(marker).addTo(map).bindPopup(hasCoord ? loja.NomeSistema : "Localização aproximada").openPopup();
+                map.invalidateSize();
             }, 200);
         };
 
-        // Edição (preenche os campos)
+        document.getElementById("btnEditarDoModal").addEventListener("click", () => {
+            $('#viewModal').modal('hide');
+            if (currentViewLoja) setTimeout(() => abrirEdicao(currentViewLoja), 300);
+        });
+
         function abrirEdicao(loja) {
             document.getElementById("editId").value = loja.CD_Filial;
             document.getElementById("editCdFilial").value = loja.CD_Filial;
@@ -700,15 +1104,9 @@
             document.getElementById("editKiosque").value = loja.Kiosque_Pickup === "Sim" ? "Sim" : "Não";
             document.getElementById("editLatitude").value = loja.Latitude || "";
             document.getElementById("editLongitude").value = loja.Longitude || "";
-            new bootstrap.Modal(document.getElementById("editModal")).show();
+            $('#editModal').modal('show');
         }
 
-        document.getElementById("btnEditarDoModal").addEventListener("click", () => {
-            bootstrap.Modal.getInstance(document.getElementById("viewModal")).hide();
-            if (currentViewLoja) abrirEdicao(currentViewLoja);
-        });
-
-        // Busca CEP
         document.getElementById("buscarCepBtn").addEventListener("click", async () => {
             const cep = document.getElementById("editCep").value.replace(/\D/g, "");
             if (cep.length !== 8) { alert("CEP inválido (8 dígitos)"); return; }
@@ -719,16 +1117,15 @@
                 document.getElementById("editEndereco").value = `${data.logradouro}, ${data.bairro}`;
                 document.getElementById("editMunicipio").value = data.localidade;
                 document.getElementById("editUf").value = data.uf;
-            } catch (err) { alert("Erro ao buscar CEP: " + err.message); }
+            } catch (err) { alert("Erro: " + err.message); }
         });
 
-        // Salvar edição (local)
         document.getElementById("btnSalvarEdicao").addEventListener("click", () => {
             const codigo = document.getElementById("editId").value;
-            const index = lojasData.findIndex(l => l.CD_Filial == codigo);
-            if (index !== -1) {
-                lojasData[index] = {
-                    ...lojasData[index],
+            const idx = lojasData.findIndex(l => l.CD_Filial == codigo);
+            if (idx !== -1) {
+                lojasData[idx] = {
+                    ...lojasData[idx],
                     NomeSistema: document.getElementById("editNomeSistema").value,
                     NomeSite: document.getElementById("editNomeSite").value,
                     CEP: document.getElementById("editCep").value,
@@ -744,45 +1141,113 @@
                     AtivoRappi: document.getElementById("editRappi").value,
                     Kiosque_Pickup: document.getElementById("editKiosque").value,
                     Latitude: document.getElementById("editLatitude").value,
-                    Longitude: document.getElementById("editLongitude").value,
+                    Longitude: document.getElementById("editLongitude").value
                 };
-                lojasData[index].regiao = mapearRegiao(lojasData[index].UF);
+                lojasData[idx].regiao = mapearRegiao(lojasData[idx].UF);
                 atualizarCards();
                 aplicarFiltros();
-                alert("Loja atualizada localmente. Para persistir no Google Sheets, integre com backend POST.");
+                alert("Loja atualizada localmente. Para persistir, integre com backend POST.");
             }
-            bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
+            $('#editModal').modal('hide');
         });
 
-        function mapearRegiao(uf) {
-            const sudeste = ["SP", "RJ", "MG", "ES"]; const sul = ["PR", "SC", "RS"]; const centroeste = ["DF", "GO", "MT", "MS"]; const nordeste = ["BA", "SE", "AL", "PE", "PB", "RN", "CE", "PI", "MA"]; const norte = ["AM", "RR", "AP", "PA", "TO", "RO", "AC"];
-            if (sudeste.includes(uf)) return "Sudeste";
-            if (sul.includes(uf)) return "Sul";
-            if (centroeste.includes(uf)) return "Centro-Oeste";
-            if (nordeste.includes(uf)) return "Nordeste";
-            if (norte.includes(uf)) return "Norte";
-            return "Outra";
+        // ================= MAPA GLOBAL =================
+        function abrirMapaGlobal() {
+            const lojasComCoordenadas = lojasData.filter(loja => {
+                const lat = parseFloat(loja.Latitude);
+                const lng = parseFloat(loja.Longitude);
+                return !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0;
+            });
+
+            if (lojasComCoordenadas.length === 0) {
+                alert("Nenhuma loja possui coordenadas válidas para exibir no mapa.");
+                return;
+            }
+
+            $('#mapaModal').modal('show');
+
+            setTimeout(() => {
+                const mapContainer = document.getElementById("fullMapView");
+                if (!mapContainer) return;
+
+                if (globalMap) {
+                    globalMap.remove();
+                    globalMap = null;
+                }
+
+                // Calcular centro médio
+                let latSum = 0, lngSum = 0;
+                lojasComCoordenadas.forEach(loja => {
+                    latSum += parseFloat(loja.Latitude);
+                    lngSum += parseFloat(loja.Longitude);
+                });
+                const centerLat = latSum / lojasComCoordenadas.length;
+                const centerLng = lngSum / lojasComCoordenadas.length;
+
+                globalMap = L.map(mapContainer).setView([centerLat, centerLng], 12);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> & CartoDB',
+                    subdomains: 'abcd',
+                    maxZoom: 19
+                }).addTo(globalMap);
+
+                const markerGroup = L.layerGroup().addTo(globalMap);
+                lojasComCoordenadas.forEach(loja => {
+                    const lat = parseFloat(loja.Latitude);
+                    const lng = parseFloat(loja.Longitude);
+                    const popupContent = `
+                        <div style="font-family:'DM Sans'; min-width: 180px;">
+                            <strong style="font-size:1rem;">${loja.NomeSistema || loja.CD_Filial}</strong><br>
+                            <span style="font-size:0.8rem;">${loja.Municipio || ''} / ${loja.UF || ''}</span><br>
+                            <span style="font-size:0.75rem; color:#555;">${loja.Endereço || ''}</span><br>
+                            <span class="badge-status ${loja.status === 'Ativo' ? 'badge-ativo' : 'badge-inativo'}" style="margin-top:5px;">${loja.status}</span><br>
+                            <button class="btn-action" style="margin-top:8px;" onclick="visualizarLoja('${loja.CD_Filial}'); $('#mapaModal').modal('hide');">Ver detalhes</button>
+                        </div>
+                    `;
+                    const marker = L.marker([lat, lng]).addTo(markerGroup);
+                    marker.bindPopup(popupContent);
+                });
+
+                const bounds = markerGroup.getBounds();
+                if (bounds.isValid()) {
+                    /*  globalMap.fitBounds(bounds, { padding: [30, 30] }); */
+                    // Visão mundial (zoom 2, centro no Atlântico)
+                    globalMap.setView([0, 0], 2);/*  */
+                }
+                /*  */
+                globalMap.invalidateSize();
+            }, 300);
         }
 
-        // Ordenação
+        // Vincular o clique ao card de cobertura
+        document.getElementById("mapaCard").addEventListener("click", abrirMapaGlobal);
+
+        // Eventos dos filtros
+        document.getElementById("filterStatus").addEventListener("change", aplicarFiltros);
+        document.getElementById("filterRegiao").addEventListener("change", aplicarFiltros);
+        document.getElementById("searchInput").addEventListener("keyup", aplicarFiltros);
+        document.getElementById("btnLimpar").addEventListener("click", () => {
+            document.getElementById("filterStatus").value = "all";
+            document.getElementById("filterRegiao").value = "all";
+            document.getElementById("searchInput").value = "";
+            aplicarFiltros();
+        });
+        document.getElementById("dataAtual").innerText = new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+
         function setupSorting() {
-            const ths = document.querySelectorAll("#lojasTable th[data-col]");
-            ths.forEach(th => {
+            document.querySelectorAll("#lojasTable th[data-col]").forEach(th => {
                 th.addEventListener("click", () => {
                     const col = th.getAttribute("data-col");
                     if (currentSort.col === col) currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
                     else { currentSort.col = col; currentSort.dir = 'asc'; }
                     renderizarTabela();
-                    ths.forEach(t => { let icon = t.querySelector("i"); icon.className = (t.getAttribute("data-col") === currentSort.col && currentSort.dir === 'asc') ? "fas fa-sort-up" : (t.getAttribute("data-col") === currentSort.col && currentSort.dir === 'desc') ? "fas fa-sort-down" : "fas fa-sort"; });
+                    document.querySelectorAll("#lojasTable th[data-col] .sort-icon").forEach(icon => {
+                        const parentCol = icon.closest("th").getAttribute("data-col");
+                        icon.className = `fas sort-icon ${parentCol === currentSort.col ? (currentSort.dir === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'}`;
+                    });
                 });
             });
         }
-
-        document.getElementById("filterStatus").addEventListener("change", aplicarFiltros);
-        document.getElementById("filterRegiao").addEventListener("change", aplicarFiltros);
-        document.getElementById("searchInput").addEventListener("keyup", aplicarFiltros);
-        document.getElementById("btnLimpar").addEventListener("click", () => { document.getElementById("filterStatus").value = "all"; document.getElementById("filterRegiao").value = "all"; document.getElementById("searchInput").value = ""; aplicarFiltros(); });
-        document.getElementById("dataAtual").innerText = new Date().toLocaleDateString("pt-BR");
 
         carregarLojas().then(setupSorting);
     </script>
