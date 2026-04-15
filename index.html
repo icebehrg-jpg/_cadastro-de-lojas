@@ -61,7 +61,7 @@
             line-height: 1.5;
         }
 
-        /* ====== HEADER ====== */
+        /* ====== HEADER FIXO ====== */
         .app-header {
             background: var(--surface);
             border-bottom: 1.5px solid var(--border);
@@ -74,6 +74,16 @@
             top: 0;
             z-index: 200;
             box-shadow: 0 1px 6px rgba(26, 86, 219, 0.07);
+        }
+
+        /* ====== CONTAINER FIXO (CARDS + FILTROS) ====== */
+        .sticky-container {
+            position: sticky;
+            top: 48px;
+            z-index: 150;
+            background-color: var(--bg);
+            margin: 0 -20px;
+            padding: 0 20px;
         }
 
         .logo-area {
@@ -124,7 +134,7 @@
         .main-container {
             max-width: 1600px;
             margin: 0 auto;
-            padding: 16px 20px;
+            padding: 0 20px 16px 20px;
         }
 
         /* ====== KPI CARDS ====== */
@@ -185,7 +195,7 @@
         }
 
         .kpi-label {
-            font-size: 0.8rem;
+            font-size: 1.0rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.6px;
@@ -274,7 +284,7 @@
 
         .filter-item label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.95rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -317,7 +327,7 @@
 
         .ms-trigger-placeholder {
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.95rem;
         }
 
         .ms-tag {
@@ -554,7 +564,7 @@
 
         .kal-table th {
             padding: 8px 12px;
-            font-size: 0.75rem;
+            font-size: 0.95rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.6px;
@@ -631,12 +641,12 @@
 
         .cell-location-city {
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 1.2rem;
             color: var(--text-body);
         }
 
         .cell-location-addr {
-            font-size: 0.85rem;
+            font-size: 1.0rem;
             color: var(--text-muted);
             white-space: nowrap;
             overflow: hidden;
@@ -646,7 +656,7 @@
 
         .cell-uf {
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 1.0rem;
             color: var(--text-muted);
             background: var(--bg);
             padding: 2px 6px;
@@ -655,13 +665,23 @@
             display: inline-block;
         }
 
+        .cell-email {
+            font-size: 1.0rem;
+            color: var(--brand);
+            text-decoration: none;
+        }
+
+        .cell-email:hover {
+            text-decoration: underline;
+        }
+
         .badge-status {
             display: inline-flex;
             align-items: center;
             gap: 5px;
             padding: 3px 10px;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 1.0rem;
             font-weight: 700;
             white-space: nowrap;
         }
@@ -879,7 +899,7 @@
         }
 
         .info-key {
-            font-size: 0.7rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
@@ -887,7 +907,7 @@
         }
 
         .info-val {
-            font-size: 0.95rem;
+            font-size: 1.2rem;
             font-weight: 600;
             color: var(--text-h);
             word-break: break-word;
@@ -918,7 +938,7 @@
             border-radius: 8px;
             border: 1.5px solid var(--border);
             background: var(--bg);
-            font-size: 0.85rem;
+            font-size: 1.0rem;
             font-weight: 600;
         }
 
@@ -968,7 +988,7 @@
         }
 
         #modalMapView {
-            height: 200px;
+            height: 390px;
             width: 100%;
             border-radius: 0 0 8px 8px;
             background: #eef2f9;
@@ -1144,130 +1164,129 @@
     </header>
 
     <div class="main-container">
-        <!-- KPI Grid -->
-        <div class="kpi-grid">
-            <div class="kpi-card" data-map="false">
-                <div class="kpi-icon green"><i class="fas fa-check-circle"></i></div>
-                <div class="kpi-body">
-                    <div class="kpi-label">Lojas Ativas</div>
-                    <div class="kpi-number" id="cardAtivas">–</div>
-                    <div class="kpi-sub">Total em operação</div>
-                </div>
-            </div>
-            <div class="kpi-card" data-map="true" id="mapaCard">
-                <div class="kpi-icon blue"><i class="fas fa-globe-americas"></i></div>
-                <div class="kpi-body">
-                    <div class="kpi-label">Cobertura</div>
-                    <div class="kpi-number" id="cardEstados">–</div>
-                    <div class="kpi-sub" id="cardCidadesRegioes">estados · cidades · regiões</div>
-                </div>
-            </div>
-            <div class="kpi-card" data-map="false">
-                <div class="kpi-icon amber"><i class="fas fa-truck"></i></div>
-                <div class="kpi-body">
-                    <div class="kpi-label">Serviços Ativos</div>
-                    <div class="service-tags">
-                        <span class="service-tag"><i class="fas fa-box"></i> Pickup: <strong
-                                id="pickupCount">–</strong></span>
-                        <span class="service-tag"><i class="fas fa-motorcycle"></i> Rappi: <strong
-                                id="rappiCount">–</strong></span>
-                        <span class="service-tag"><i class="fas fa-building"></i> Shopping: <strong
-                                id="shoppingCount">–</strong></span>
+        <!-- Container fixo (cards + filtros) -->
+        <div class="sticky-container">
+            <!-- KPI Grid -->
+            <div class="kpi-grid">
+                <div class="kpi-card" data-map="false">
+                    <div class="kpi-icon green"><i class="fas fa-check-circle"></i></div>
+                    <div class="kpi-body">
+                        <div class="kpi-label">Lojas Ativas</div>
+                        <div class="kpi-number" id="cardAtivas">–</div>
+                        <div class="kpi-sub">Total em operação</div>
                     </div>
+                </div>
+                <div class="kpi-card" data-map="true" id="mapaCard">
+                    <div class="kpi-icon blue"><i class="fas fa-globe-americas"></i></div>
+                    <div class="kpi-body">
+                        <div class="kpi-label">Cobertura</div>
+                        <div class="kpi-number" id="cardEstados">–</div>
+                        <div class="kpi-sub" id="cardCidadesRegioes">estados · cidades · regiões</div>
+                    </div>
+                </div>
+                <div class="kpi-card" data-map="false">
+                    <div class="kpi-icon amber"><i class="fas fa-truck"></i></div>
+                    <div class="kpi-body">
+                        <div class="kpi-label">Serviços Ativos</div>
+                        <div class="service-tags">
+                            <span class="service-tag"><i class="fas fa-box"></i> Pickup: <strong
+                                    id="pickupCount">–</strong></span>
+                            <span class="service-tag"><i class="fas fa-motorcycle"></i> Rappi: <strong
+                                    id="rappiCount">–</strong></span>
+                            <span class="service-tag"><i class="fas fa-building"></i> Shopping: <strong
+                                    id="shoppingCount">–</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-panel">
+                <div class="filters-title"><i class="fas fa-filter"></i> Filtros</div>
+                <div class="filters-row">
+                    <div class="filter-item">
+                        <label>Status</label>
+                        <div class="ms-wrapper" id="ms-status">
+                            <div class="ms-trigger" id="ms-status-trigger">
+                                <span class="ms-trigger-placeholder">Todos</span>
+                            </div>
+                            <i class="fas fa-chevron-down ms-arrow"></i>
+                            <div class="ms-dropdown" id="ms-status-dropdown">
+                                <div class="ms-option" data-val="Ativo"><span class="ms-option-check"><i
+                                            class="fas fa-check"></i></span> Ativo</div>
+                                <div class="ms-option" data-val="Inativo"><span class="ms-option-check"><i
+                                            class="fas fa-check"></i></span> Inativo</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-item">
+                        <label>Região</label>
+                        <div class="ms-wrapper" id="ms-regiao">
+                            <div class="ms-trigger" id="ms-regiao-trigger">
+                                <span class="ms-trigger-placeholder">Todas</span>
+                            </div>
+                            <i class="fas fa-chevron-down ms-arrow"></i>
+                            <div class="ms-dropdown" id="ms-regiao-dropdown">
+                                <div class="ms-option" data-val="Sudeste"><span class="ms-option-check"><i
+                                            class="fas fa-check"></i></span> Sudeste</div>
+                                <div class="ms-option" data-val="Sul"><span class="ms-option-check"><i
+                                            class="fas fa-check"></i></span> Sul</div>
+                                <div class="ms-option" data-val="Centro-Oeste"><span class="ms-option-check"><i
+                                            class="fas fa-check"></i></span> Centro-Oeste</div>
+                                <div class="ms-option" data-val="Nordeste"><span class="ms-option-check"><i
+                                            class="fas fa-check"></i></span> Nordeste</div>
+                                <div class="ms-option" data-val="Norte"><span class="ms-option-check"><i
+                                            class="fas fa-check"></i></span> Norte</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-item">
+                        <label>UF</label>
+                        <div class="ms-wrapper" id="ms-uf">
+                            <div class="ms-trigger" id="ms-uf-trigger">
+                                <span class="ms-trigger-placeholder">Todas</span>
+                            </div>
+                            <i class="fas fa-chevron-down ms-arrow"></i>
+                            <div class="ms-dropdown" id="ms-uf-dropdown">
+                                <div class="ms-search"><input type="text" placeholder="Buscar UF…" id="ms-uf-search">
+                                </div>
+                                <div id="ms-uf-options"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-item">
+                        <label>Município</label>
+                        <div class="ms-wrapper" id="ms-municipio">
+                            <div class="ms-trigger" id="ms-municipio-trigger">
+                                <span class="ms-trigger-placeholder">Todos</span>
+                            </div>
+                            <i class="fas fa-chevron-down ms-arrow"></i>
+                            <div class="ms-dropdown" id="ms-municipio-dropdown">
+                                <div class="ms-search"><input type="text" placeholder="Buscar município…"
+                                        id="ms-municipio-search"></div>
+                                <div id="ms-municipio-options"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-item search-item">
+                        <label>Busca rápida</label>
+                        <input type="text" id="searchInput" placeholder="Código, nome ou cidade…">
+                    </div>
+
+                    <button class="btn-limpar" id="btnLimpar"><i class="fas fa-eraser"></i> Limpar</button>
+                </div>
+                <div class="filters-summary">
+                    <i class="fas fa-info-circle"></i> Exibindo <strong id="countVisible">0</strong> de <strong
+                        id="countTotal">0</strong> lojas
                 </div>
             </div>
         </div>
 
-        <!-- Filtros -->
-        <div class="filters-panel">
-            <div class="filters-title"><i class="fas fa-filter"></i> Filtros</div>
-            <div class="filters-row">
-                <!-- Status multiselect -->
-                <div class="filter-item">
-                    <label>Status</label>
-                    <div class="ms-wrapper" id="ms-status">
-                        <div class="ms-trigger" id="ms-status-trigger">
-                            <span class="ms-trigger-placeholder">Todos</span>
-                        </div>
-                        <i class="fas fa-chevron-down ms-arrow"></i>
-                        <div class="ms-dropdown" id="ms-status-dropdown">
-                            <div class="ms-option" data-val="Ativo"><span class="ms-option-check"><i
-                                        class="fas fa-check"></i></span> Ativo</div>
-                            <div class="ms-option" data-val="Inativo"><span class="ms-option-check"><i
-                                        class="fas fa-check"></i></span> Inativo</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Região multiselect -->
-                <div class="filter-item">
-                    <label>Região</label>
-                    <div class="ms-wrapper" id="ms-regiao">
-                        <div class="ms-trigger" id="ms-regiao-trigger">
-                            <span class="ms-trigger-placeholder">Todas</span>
-                        </div>
-                        <i class="fas fa-chevron-down ms-arrow"></i>
-                        <div class="ms-dropdown" id="ms-regiao-dropdown">
-                            <div class="ms-option" data-val="Sudeste"><span class="ms-option-check"><i
-                                        class="fas fa-check"></i></span> Sudeste</div>
-                            <div class="ms-option" data-val="Sul"><span class="ms-option-check"><i
-                                        class="fas fa-check"></i></span> Sul</div>
-                            <div class="ms-option" data-val="Centro-Oeste"><span class="ms-option-check"><i
-                                        class="fas fa-check"></i></span> Centro-Oeste</div>
-                            <div class="ms-option" data-val="Nordeste"><span class="ms-option-check"><i
-                                        class="fas fa-check"></i></span> Nordeste</div>
-                            <div class="ms-option" data-val="Norte"><span class="ms-option-check"><i
-                                        class="fas fa-check"></i></span> Norte</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- UF multiselect -->
-                <div class="filter-item">
-                    <label>UF</label>
-                    <div class="ms-wrapper" id="ms-uf">
-                        <div class="ms-trigger" id="ms-uf-trigger">
-                            <span class="ms-trigger-placeholder">Todas</span>
-                        </div>
-                        <i class="fas fa-chevron-down ms-arrow"></i>
-                        <div class="ms-dropdown" id="ms-uf-dropdown">
-                            <div class="ms-search"><input type="text" placeholder="Buscar UF…" id="ms-uf-search"></div>
-                            <div id="ms-uf-options"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Município multiselect -->
-                <div class="filter-item">
-                    <label>Município</label>
-                    <div class="ms-wrapper" id="ms-municipio">
-                        <div class="ms-trigger" id="ms-municipio-trigger">
-                            <span class="ms-trigger-placeholder">Todos</span>
-                        </div>
-                        <i class="fas fa-chevron-down ms-arrow"></i>
-                        <div class="ms-dropdown" id="ms-municipio-dropdown">
-                            <div class="ms-search"><input type="text" placeholder="Buscar município…"
-                                    id="ms-municipio-search"></div>
-                            <div id="ms-municipio-options"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Busca -->
-                <div class="filter-item search-item">
-                    <label>Busca rápida</label>
-                    <input type="text" id="searchInput" placeholder="Código, nome ou cidade…">
-                </div>
-
-                <button class="btn-limpar" id="btnLimpar"><i class="fas fa-eraser"></i> Limpar</button>
-            </div>
-            <div class="filters-summary">
-                <i class="fas fa-info-circle"></i>
-                Exibindo <strong id="countVisible">0</strong> de <strong id="countTotal">0</strong> lojas
-            </div>
-        </div>
-
-        <!-- Tabela -->
+        <!-- Tabela (rolável) -->
         <div class="table-card">
             <div class="table-card-header">
                 <h2 class="table-card-title"><i class="fas fa-list"></i> Listagem de Lojas <span
@@ -1282,13 +1301,14 @@
                             <th data-col="Municipio" class="hidden-xs">Cidade / Endereço <i
                                     class="fas fa-sort sort-icon"></i></th>
                             <th data-col="UF">UF <i class="fas fa-sort sort-icon"></i></th>
+                            <th data-col="Email">E-mail <i class="fas fa-sort sort-icon"></i></th>
                             <th data-col="status">Status <i class="fas fa-sort sort-icon"></i></th>
                             <th style="width:50px; text-align:center;">Ver</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
                         <tr>
-                            <td colspan="6" class="table-empty"><i class="fas fa-spinner fa-pulse"></i> Carregando
+                            <td colspan="7" class="table-empty"><i class="fas fa-spinner fa-pulse"></i> Carregando
                                 lojas...</td>
                         </tr>
                     </tbody>
@@ -1297,7 +1317,7 @@
         </div>
     </div>
 
-    <!-- Modal Visualização -->
+    <!-- Modais (mantidos iguais) -->
     <div class="modal fade" id="viewModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -1315,7 +1335,6 @@
         </div>
     </div>
 
-    <!-- Modal Edição -->
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -1451,7 +1470,6 @@
         </div>
     </div>
 
-    <!-- Modal Mapa Global -->
     <div class="modal fade" id="mapaModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-fullscreen" role="document">
             <div class="modal-content">
@@ -1475,7 +1493,7 @@
 
     <script>
         // ================= CONFIGURAÇÃO =================
-        const API_URL = "https://script.google.com/macros/s/AKfycby8FCTzObJd3nafcQRlKSnLBmHem1S1h_m2F5zR_3_ehQhRTAdjm_HR3-JdOIUxOBJi/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxPeIEMGeDUk8lWn61Y8j9c5PQBs6aOBgVejYZfLA2qMIGDM3sPXqGivvy1gBmx4nOW/exec";
         let lojasData = [], filteredData = [];
         let currentSort = { col: null, dir: 'asc' };
         let currentViewLoja = null;
@@ -1492,12 +1510,9 @@
         function msInit(id, placeholder) {
             const trigger = document.getElementById(`ms-${id}-trigger`);
             const dropdown = document.getElementById(`ms-${id}-dropdown`);
-            const arrow = trigger.nextElementSibling;
-
             trigger.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const isOpen = trigger.classList.contains('open');
-                // close all
                 document.querySelectorAll('.ms-trigger.open').forEach(t => t.classList.remove('open'));
                 document.querySelectorAll('.ms-dropdown.open').forEach(d => d.classList.remove('open'));
                 if (!isOpen) {
@@ -1527,16 +1542,11 @@
             const arr = msState[id];
             const trigger = document.getElementById(`ms-${id}-trigger`);
             const placeholders = { status: 'Todos', regiao: 'Todas', uf: 'Todas', municipio: 'Todos' };
-
             if (arr.length === 0) {
                 trigger.innerHTML = `<span class="ms-trigger-placeholder">${placeholders[id]}</span>`;
             } else {
-                trigger.innerHTML = arr.map(v =>
-                    `<span class="ms-tag">${v} <span class="ms-tag-remove" onclick="event.stopPropagation();msToggle('${id}','${v}')">&times;</span></span>`
-                ).join('');
+                trigger.innerHTML = arr.map(v => `<span class="ms-tag">${v} <span class="ms-tag-remove" onclick="event.stopPropagation();msToggle('${id}','${v}')">&times;</span></span>`).join('');
             }
-
-            // update option highlights
             const dropdown = document.getElementById(`ms-${id}-dropdown`);
             dropdown.querySelectorAll('.ms-option').forEach(opt => {
                 const val = opt.getAttribute('data-val');
@@ -1548,9 +1558,7 @@
             const container = document.getElementById(`ms-${id}-options`);
             if (!container) return;
             const sorted = [...values].sort();
-            container.innerHTML = sorted.length
-                ? sorted.map(v => `<div class="ms-option" data-val="${v}"><span class="ms-option-check"><i class="fas fa-check"></i></span>${v}</div>`).join('')
-                : `<div class="ms-empty">Sem opções</div>`;
+            container.innerHTML = sorted.length ? sorted.map(v => `<div class="ms-option" data-val="${v}"><span class="ms-option-check"><i class="fas fa-check"></i></span>${v}</div>`).join('') : `<div class="ms-empty">Sem opções</div>`;
             container.querySelectorAll('.ms-option').forEach(opt => {
                 opt.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1568,13 +1576,11 @@
             });
         }
 
-        // Init static multiselects
         msInit('status', 'Todos');
         msInit('regiao', 'Todas');
         msInit('uf', 'Todas');
         msInit('municipio', 'Todos');
 
-        // Attach click to static options
         document.querySelectorAll('#ms-status-dropdown .ms-option, #ms-regiao-dropdown .ms-option').forEach(opt => {
             opt.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1584,7 +1590,6 @@
             });
         });
 
-        // Search handlers for UF and Município
         document.getElementById('ms-uf-search').addEventListener('input', (e) => msSearch('uf', e.target.value));
         document.getElementById('ms-municipio-search').addEventListener('input', (e) => msSearch('municipio', e.target.value));
 
@@ -1621,7 +1626,6 @@
             return "Outra";
         }
 
-        // ================= NORMALIZAÇÃO DOS DADOS =================
         function normalizarLoja(loja) {
             return {
                 ...loja,
@@ -1630,6 +1634,7 @@
                 Horario01: loja.Horario01 || loja["Horario 01"] || "",
                 Horario02: loja.Horario02 || loja["Horario 02"] || "",
                 Horario03: loja.Horario03 || loja["Horario 03"] || "",
+                Email: loja.Email || loja["Email"] || "",
             };
         }
 
@@ -1640,19 +1645,15 @@
                 const data = await resp.json();
                 if (data.success && Array.isArray(data.lojas)) {
                     lojasData = data.lojas.map(normalizarLoja);
-
-                    // Populate dynamic filters
                     const ufs = [...new Set(lojasData.map(l => l.UF).filter(Boolean))];
                     const municipios = [...new Set(lojasData.map(l => l.Municipio).filter(Boolean))];
                     msPopulate('uf', ufs);
                     msPopulate('municipio', municipios);
-
                     aplicarFiltros();
                     atualizarCards();
                 } else throw new Error(data.error || "Erro ao carregar dados");
             } catch (err) {
-                document.getElementById("tableBody").innerHTML =
-                    `<tr><td colspan="6" class="table-empty"><i class="fas fa-exclamation-triangle"></i> Erro: ${err.message}</td></tr>`;
+                document.getElementById("tableBody").innerHTML = `<tr><td colspan="7" class="table-empty"><i class="fas fa-exclamation-triangle"></i> Erro: ${err.message}</td></tr>`;
             }
         }
 
@@ -1684,36 +1685,24 @@
 
         function renderizarTabela() {
             if (!filteredData.length) {
-                document.getElementById("tableBody").innerHTML =
-                    `<tr><td colspan="6" class="table-empty"><i class="fas fa-search"></i> Nenhuma loja encontrada</td></tr>`;
+                document.getElementById("tableBody").innerHTML = `<tr><td colspan="7" class="table-empty"><i class="fas fa-search"></i> Nenhuma loja encontrada</td></tr>`;
                 return;
             }
             let data = filteredData;
             if (currentSort.col) data = sortData(data, currentSort.col, currentSort.dir);
-
             const html = data.map(loja => {
                 const statusClass = loja.status === "Ativo" ? "badge-ativo" : "badge-inativo";
                 const nomeSite = loja.NomeSite ? `<div class="cell-nome-secondary">${loja.NomeSite}</div>` : '';
                 const endSimples = getEnderecoSimples(loja);
+                const email = loja.Email ? `<a href="mailto:${loja.Email}" class="cell-email">${loja.Email}</a>` : "—";
                 return `<tr>
                     <td><span class="cell-code">${loja.CD_Filial || "—"}</span></td>
-                    <td>
-                        <div class="cell-nome">
-                            <div class="cell-nome-primary">${loja.NomeSistema || "—"}</div>
-                            ${nomeSite}
-                        </div>
-                    </td>
-                    <td class="hidden-xs">
-                        <div class="cell-location">
-                            <div class="cell-location-city">${loja.Municipio || "—"}</div>
-                            <div class="cell-location-addr">${endSimples}</div>
-                        </div>
-                    </td>
+                    <td><div class="cell-nome"><div class="cell-nome-primary">${loja.NomeSistema || "—"}</div>${nomeSite}</div></td>
+                    <td class="hidden-xs"><div class="cell-location"><div class="cell-location-city">${loja.Municipio || "—"}</div><div class="cell-location-addr">${endSimples}</div></div></td>
                     <td><span class="cell-uf">${loja.UF || "—"}</span></td>
+                    <td>${email}</td>
                     <td><span class="badge-status ${statusClass}">${loja.status}</span></td>
-                    <td style="text-align:center;">
-                        <button class="btn-action" onclick="visualizarLoja('${loja.CD_Filial}')" title="Ver detalhes"><i class="fas fa-eye"></i></button>
-                    </td>
+                    <td style="text-align:center;"><button class="btn-action" onclick="visualizarLoja('${loja.CD_Filial}')" title="Ver detalhes"><i class="fas fa-eye"></i></button></td>
                 </tr>`;
             }).join('');
             document.getElementById("tableBody").innerHTML = html;
@@ -1722,18 +1711,11 @@
         function aplicarFiltros() {
             let dados = [...lojasData];
             const busca = document.getElementById("searchInput").value.toLowerCase().trim();
-
             if (msState.status.length) dados = dados.filter(l => msState.status.includes(l.status));
             if (msState.regiao.length) dados = dados.filter(l => msState.regiao.includes(l.regiao));
             if (msState.uf.length) dados = dados.filter(l => msState.uf.includes(l.UF));
             if (msState.municipio.length) dados = dados.filter(l => msState.municipio.includes(l.Municipio));
-            if (busca) dados = dados.filter(l =>
-                (l.CD_Filial?.toString().includes(busca)) ||
-                (l.NomeSistema?.toLowerCase().includes(busca)) ||
-                (l.Municipio?.toLowerCase().includes(busca)) ||
-                (l.NomeSite?.toLowerCase().includes(busca))
-            );
-
+            if (busca) dados = dados.filter(l => (l.CD_Filial?.toString().includes(busca)) || (l.NomeSistema?.toLowerCase().includes(busca)) || (l.Municipio?.toLowerCase().includes(busca)) || (l.NomeSite?.toLowerCase().includes(busca)));
             filteredData = dados;
             document.getElementById("countVisible").innerText = filteredData.length;
             document.getElementById("countTotal").innerText = lojasData.length;
@@ -1748,17 +1730,11 @@
             currentViewLoja = loja;
             const horarios = getHorariosFormatados(loja);
             const statusClass = loja.status === "Ativo" ? "badge-ativo" : "badge-inativo";
-
             const horariosHTML = horarios.split("/").map(h => `<span class="horario-pill">${h.trim()}</span>`).join("");
-
             function servico(label, icon, val) {
                 const sim = val === "Sim";
-                return `<div class="servico-item ${sim ? 'sim' : 'nao'}">
-                    <div class="servico-icon"><i class="fas ${icon}"></i></div>
-                    <span>${label}</span>
-                </div>`;
+                return `<div class="servico-item ${sim ? 'sim' : 'nao'}"><div class="servico-icon"><i class="fas ${icon}"></i></div><span>${label}</span></div>`;
             }
-
             document.getElementById("viewModalBody").innerHTML = `
 <div class="modal-loja-header">
     <div>
@@ -1790,6 +1766,8 @@
                 <div class="info-item"><span class="info-key">Tamanho (m²)</span><span class="info-val">${loja.Tamanho || "—"}</span></div>
                 <div class="info-item"><span class="info-key">Coleta de Valores</span><span class="info-val">${loja["Coleta de Valores"] || "—"}</span></div>
                 <div class="info-item"><span class="info-key">Planta da Loja</span><span class="info-val">${loja["Planta da Loja"] ? `<a href="${loja["Planta da Loja"]}" target="_blank" class="btn-link">📐 Ver Planta</a>` : "—"}</span></div>
+                <div class="info-item"><span class="info-key">Horário de Recebimento</span><span class="info-val">${loja["Horário de Recebimento"] || "—"}</span></div>
+                <div class="info-item"><span class="info-key">Tipo de Caminhão</span><span class="info-val">${loja["Tipo de Caminhão"] || "—"}</span></div>
             </div>
         </div>
 
@@ -1829,8 +1807,7 @@
         </div>
     </div>
 </div>
-</div>
-`;
+</div>`;
             $('#viewModal').modal('show');
             setTimeout(() => {
                 const mapDiv = document.getElementById("modalMapView");
@@ -1925,44 +1902,34 @@
                 const lng = parseFloat(loja.Longitude);
                 return !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0;
             });
-
             if (lojasComCoordenadas.length === 0) {
                 alert("Nenhuma loja possui coordenadas válidas para exibir no mapa.");
                 return;
             }
-
             $('#mapaModal').modal('show');
-
             setTimeout(() => {
                 const mapContainer = document.getElementById("fullMapView");
                 if (!mapContainer) return;
-
                 if (globalMap) { globalMap.remove(); globalMap = null; }
-
                 globalMap = L.map(mapContainer).setView([-14.2350, -51.9253], 5);
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> & CartoDB',
                     subdomains: 'abcd', maxZoom: 19
                 }).addTo(globalMap);
-
                 const markerGroup = L.layerGroup().addTo(globalMap);
                 lojasComCoordenadas.forEach(loja => {
                     const lat = parseFloat(loja.Latitude);
                     const lng = parseFloat(loja.Longitude);
                     const statusClass = loja.status === 'Ativo' ? 'badge-ativo' : 'badge-inativo';
-                    const popupContent = `
-                    <div style="font-family:'DM Sans'; min-width:200px;">
+                    const popupContent = `<div style="font-family:'DM Sans'; min-width:200px;">
                         <strong style="font-size:0.95rem;">${loja.NomeSistema || loja.CD_Filial}</strong><br>
                         <span style="font-size:0.8rem;color:#555;">${loja.Municipio || ''} / ${loja.UF || ''}</span><br>
                         <span style="font-size:0.75rem;color:#777;">${loja.Endereço || ''}</span><br>
                         <span class="badge-status ${statusClass}" style="margin-top:5px;display:inline-flex;">${loja.status}</span><br>
-                        <button class="btn-action" style="margin-top:8px;width:auto;padding:4px 10px;font-size:0.8rem;" onclick="visualizarLoja('${loja.CD_Filial}'); $('#mapaModal').modal('hide');">
-                            <i class="fas fa-eye"></i> Ver detalhes
-                        </button>
+                        <button class="btn-action" style="margin-top:8px;width:auto;padding:4px 10px;font-size:0.8rem;" onclick="visualizarLoja('${loja.CD_Filial}'); $('#mapaModal').modal('hide');"><i class="fas fa-eye"></i> Ver detalhes</button>
                     </div>`;
                     L.marker([lat, lng], { icon: customIcon }).addTo(markerGroup).bindPopup(popupContent);
                 });
-
                 globalMap.invalidateSize();
             }, 300);
         }
@@ -1980,7 +1947,6 @@
             document.getElementById("searchInput").value = "";
             document.getElementById("ms-uf-search").value = "";
             document.getElementById("ms-municipio-search").value = "";
-            // show all options back
             document.querySelectorAll('#ms-uf-options .ms-option, #ms-municipio-options .ms-option').forEach(o => o.style.display = '');
             aplicarFiltros();
         });
